@@ -1,21 +1,37 @@
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom"
 import styles from "./Inicio.module.scss"
+import Card from "../../components/Card"
+import { MarvelAPIResponse, Character } from "../../types/api"
+import { PUBLIC_KEY, PRIVATE_KEY } from "../../../keys"
+import { md5 } from 'js-md5';
 
 export default function Inicio() {
-    const personagens = [
-        {
-            nome: "Daredevil",
-            descricao: "Blinded as a boy, Matt Murdock used his sonar-strong hearing to aid him in his martial arts training, becoming a fight-for-the-underdog defense attorney by day and a masked vigilante called Daredevil by night."
-        },
-        {
-            nome: "Captain Marvel",
-            descricao: "Rediscovering her human identity and past, Carol Danvers learned to channel her powers for good, becoming the Super Hero Captain Marvel. Now an ally to Earth's mightiest heroes, the Avengers, she travels across the stars to give aid to those in need."
-        },
-        {
-            nome: "Ms. Marvel",
-            descricao: "Pakistani-American Super Hero Kamala Khan protects the streets of Jersey City with her one-of-a-kind embiggening power."
-        }
-    ]
+    const [personagens, setPersonagens] = useState<Character[]>([])
+
+    const timeStamp = Math.floor(Date.now() / 1000).toString();
+    let apiKey = PUBLIC_KEY
+    let privateKey = PRIVATE_KEY
+    let hash = md5(`${timeStamp}${privateKey}${apiKey}`)
+    // md5(ts+privateKey+publicKey)
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`http://gateway.marvel.com/v1/public/characters?ts=${timeStamp}&apikey=${apiKey}&hash=${hash}&limit=16&orderBy=name`)
+            
+            if (response.ok) {
+                const responseData: MarvelAPIResponse = await response.json()
+                setPersonagens(responseData.data.results)
+                console.log("Requisicao feita.")
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }           
+    }
+
+    useEffect(() => { fetchData() }, [])
+
     return (
         <>
             <header>
@@ -30,18 +46,32 @@ export default function Inicio() {
                     </nav>   
                 </div>
             </header>
+            
+            <div className={styles.containerPesquisar}>
+                <form className={styles.formPesquisar}>
+                    <div className={styles.inputContainer}>
+                        <input 
+                            type="search" 
+                            placeholder="Pesquise por algum personagem"
+                        />
+                    </div>
+                    <button type="submit">Pesquisar</button>
+                </form>
+            </div>   
 
-            <form className={styles.containerFormPesquisar}>
-                <div className={styles.inputContainer}>
-                    <input 
-                        type="search" 
-                        placeholder="Pesquise por algum personagem"
-                    />
+            <section className={styles.sectionPersonagens}>
+                <div className={styles.containerPersonagens}>
+                    {personagens.map((personagem) => {
+                        return (
+                            <Card 
+                                key={personagem.name}
+                                URLPhoto={`${personagem.thumbnail.path}.${personagem.thumbnail.extension}`}
+                                nome={personagem.name}
+                                id={personagem.id}
+                            />
+                        )
+                    })}
                 </div>
-                <button type="submit">Pesquisar</button>
-            </form>
-
-            <section>
             </section>
         </>
     )
