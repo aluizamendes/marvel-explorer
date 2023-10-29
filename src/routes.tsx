@@ -3,15 +3,18 @@ import './App.css'
 import Inicio from './pages/Inicio/index.tsx'
 import Favoritos from './pages/Favoritos/index.tsx'
 import Personagem from './pages/Personagem/index.tsx'
+import PaginaBase from './pages/PaginaBase/index.tsx'
 
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<Inicio />} />
-        <Route path='/favoritos' element={<Favoritos />} />
-        <Route path='/:id' element={<Personagem />} />
+        <Route path='/' element={<PaginaBase />}>
+          <Route index element={<Inicio />} />
+          <Route path='/favoritos' element={<Favoritos />} />
+          <Route path='/:id' element={<Personagem />} />
+        </Route>
       </Routes>    
     </BrowserRouter>
   )
