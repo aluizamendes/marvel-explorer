@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link } from "react-router-dom"
 import styles from "./Inicio.module.scss"
 import Card from "../../components/Card"
 import { MarvelAPIResponse, Character } from "../../types/api"
@@ -34,19 +33,6 @@ export default function Inicio() {
 
     return (
         <>
-            <header>
-                <div className={styles.nav}>
-                    <span>Marvel Explorer</span>
-                    <nav>
-                        <ul className={styles.containerLinksMenu}>
-                            <li>Inicio</li>
-                            <li>Comics</li>
-                            <li> <Link to={"/favoritos"}>Favoritos</Link> </li>
-                        </ul>
-                    </nav>   
-                </div>
-            </header>
-            
             <div className={styles.containerPesquisar}>
                 <form className={styles.formPesquisar}>
                     <div className={styles.inputContainer}>
