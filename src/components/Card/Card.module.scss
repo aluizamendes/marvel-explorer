@@ -8,7 +8,7 @@
     // padding: 16px 24px;
     background-color: #ffffff;
     // box-shadow: 0 0 16px 2px  rgba(0, 0, 0, 0.178);
-    transition: .4s ease-in-out;
+    transition: .3s ease-in-out;
 
     &:hover {
         transform: scale(1.08);
@@ -40,11 +40,12 @@
             justify-content: center;
             background-color: #202020;
 
-            a { text-decoration: none; color: inherit; }
-
             p {
                 text-align: center;
                 color: #FFFFFF;
+                font-family: 'Roboto Condensed', sans-serif;
+                font-weight: 500;
+                font-size: 18px;
             }
         }
 

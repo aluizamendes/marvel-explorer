@@ -9,19 +9,20 @@ interface ICardProps {
 
 export default function Card({ URLPhoto, nome, id }: ICardProps) {
     return (
-        <div className={styles.card}>
+        <Link to={`/${id}`}>
 
-            <div className={styles.cardContent}>
-                <div className={styles.imagemContainer}>
-                    <img src={URLPhoto} alt={`Imagem do personagem ${nome}.`} />
-                </div>
+            <div className={styles.card}>
+                
+                <div className={styles.cardContent}>
+                    <div className={styles.imagemContainer}>
+                        <img src={URLPhoto} alt={`Imagem do personagem ${nome}.`} />
+                    </div>
 
-                <div className={styles.tituloContainer}>
-                    <Link to={`/${id}`}>
+                    <div className={styles.tituloContainer}>
                         <p>{nome}</p>
-                    </Link>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }

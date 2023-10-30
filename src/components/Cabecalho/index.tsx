@@ -8,8 +8,8 @@ export default function Cabecalho() {
                 <span>Marvel Explorer</span>
                 <nav>
                     <ul className={styles.containerLinksMenu}>
-                        <li>Inicio</li>
-                        <li>Comics</li>
+                        <li> <Link to={"/"}>Inicio</Link> </li>
+                        <li> <Link to={"/comics"}>Comics</Link> </li>
                         <li> <Link to={"/favoritos"}>Favoritos</Link> </li>
                     </ul>
                 </nav>   
