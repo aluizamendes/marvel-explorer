@@ -7,22 +7,25 @@ import styles from "./Personagem.module.scss"
 
 export default function Personagem() {
     const [personagem, setPersonagem] = useState<Character[]>([])
-
-    const tabItems = ["Comics", "Events", "Series", "Stories"]
+    const [tabContent, setTabContent] = useState("Comics")
+    const [tabContentData, setTabContentData] = useState([])
     const params = useParams()
+    const tabItems = ["Comics", "Events", "Series", "Stories"]
 
     const timeStamp = Math.floor(Date.now() / 1000).toString();
     let apiKey = PUBLIC_KEY
     let privateKey = PRIVATE_KEY
     let hash = md5(`${timeStamp}${privateKey}${apiKey}`)
 
-    const fetchData = async () => {
+    const fetchTabData = async (tab: string) => {
+        setTabContent(tab)
+        // console.log("Tab selecionada:", tabContent)
         try {
-            const response = await fetch(`https://gateway.marvel.com:443/v1/public/characters/${params.id}?ts=${timeStamp}&apikey=${apiKey}&hash=${hash}`)
+            const response = await fetch(`https://gateway.marvel.com:443/v1/public/characters/${params.id}/${tab.toLowerCase()}?ts=${timeStamp}&apikey=${apiKey}&hash=${hash}`)
 
             if (response.ok) {
-                const responseData: MarvelAPIResponse = await response.json()
-                setPersonagem(responseData.data.results)
+                const responseData = await response.json()
+                setTabContentData(responseData.data.results)
                 console.log("Requisicao feita.")
             }
 
@@ -31,7 +34,22 @@ export default function Personagem() {
         }
     }
 
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`https://gateway.marvel.com:443/v1/public/characters/${params.id}?ts=${timeStamp}&apikey=${apiKey}&hash=${hash}`)
+
+            if (response.ok) {
+                const responseData: MarvelAPIResponse = await response.json()
+                setPersonagem(responseData.data.results)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => { fetchData() }, [])
+    useEffect(() => { fetchTabData(tabContent) }, [tabContent])
 
     return (
         <>
@@ -50,26 +68,44 @@ export default function Personagem() {
                             </div>
                             <div className={styles.infoContainer}>
                                 <h2>{personagem[0].name}</h2>
-                                <p>{personagem[0].description}</p>
+                                <p>{personagem[0].description == "" ? "Description is not avaiable" : personagem[0].description}</p>
                             </div>
                         </div>
 
                         <div className={styles.secaoBaixo}>
                             <div className={styles.tabs}>
                                 <ul className={styles.tabsContainer}>
-                                    {tabItems.map((item) => {
+                                    { tabItems.map((item) => {
                                         return (
                                             <li>
-                                                {item}
+                                                <button
+                                                    style={{ borderBottom: `${item === tabContent ? "3px solid #e03d3d " : ""}` }}   
+                                                    onClick={() => fetchTabData(item)} 
+                                                >
+                                                    {item}
+                                                </button>
                                             </li>
                                         )
                                     })}
                                     </ul>
                                 </div>
 
+                                { tabContentData.length != -1 && (
+                                    <ul className={styles.lista}>
+                                        {tabContentData.map((item) => {
+                                            return (
+                                                <li>
+                                                    {item.title}
+                                                </li>
+                                            )
+                                        })}
+
+                                    </ul>
+                                )}
+
                             </div>
                         </div>
-                )}
+                    )}
                 </div>
             </section>
         </>
