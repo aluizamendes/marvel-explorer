@@ -9,6 +9,7 @@ export default function Personagem() {
     const [personagem, setPersonagem] = useState<Character[]>([])
     const [tabContent, setTabContent] = useState("Comics")
     const [tabContentData, setTabContentData] = useState([])
+    const [loading, setLoading] = useState(false)
     const params = useParams()
     const tabItems = ["Comics", "Events", "Series", "Stories"]
 
@@ -19,19 +20,21 @@ export default function Personagem() {
 
     const fetchTabData = async (tab: string) => {
         setTabContent(tab)
-        // console.log("Tab selecionada:", tabContent)
+        setLoading(true)
+
         try {
             const response = await fetch(`https://gateway.marvel.com:443/v1/public/characters/${params.id}/${tab.toLowerCase()}?ts=${timeStamp}&apikey=${apiKey}&hash=${hash}`)
 
             if (response.ok) {
                 const responseData = await response.json()
                 setTabContentData(responseData.data.results)
-                console.log("Requisicao feita.")
-            }
 
+                console.log("Requisicao feita.")
+                console.log(`Conteudo da tab ${tab}: `, tabContentData)
+            }
         } catch (error) {
             console.log(error)
-        }
+        } finally { setLoading(false) }
     }
 
     const fetchData = async () => {
@@ -55,52 +58,57 @@ export default function Personagem() {
         <>
             <section className={styles.section}>
                 <div className={styles.container}>
-                {personagem.length > 0 && (
-                    <div className={styles.contentContainer}>
+                    {personagem.length > 0 && (
+                        <div className={styles.contentContainer}>
 
-                        <div className={styles.secaoTopo}>
-                            <div className={styles.imageContainer}>
-                                <img
-                                    src={`${personagem[0].thumbnail.path}.${personagem[0].thumbnail.extension}`}
-                                    alt=""
-                                />
+                            <div className={styles.secaoTopo}>
+                                <div className={styles.imageContainer}>
+                                    <img
+                                        src={`${personagem[0].thumbnail.path}.${personagem[0].thumbnail.extension}`}
+                                        alt=""
+                                    />
 
-                            </div>
-                            <div className={styles.infoContainer}>
-                                <h2>{personagem[0].name}</h2>
-                                <p>{personagem[0].description == "" ? "Description is not avaiable" : personagem[0].description}</p>
-                            </div>
-                        </div>
-
-                        <div className={styles.secaoBaixo}>
-                            <div className={styles.tabs}>
-                                <ul className={styles.tabsContainer}>
-                                    { tabItems.map((item) => {
-                                        return (
-                                            <li>
-                                                <button
-                                                    style={{ borderBottom: `${item === tabContent ? "3px solid #e03d3d " : ""}` }}   
-                                                    onClick={() => fetchTabData(item)} 
-                                                >
-                                                    {item}
-                                                </button>
-                                            </li>
-                                        )
-                                    })}
-                                    </ul>
                                 </div>
+                                <div className={styles.infoContainer}>
+                                    <h2>{personagem[0].name}</h2>
+                                    <p>{personagem[0].description == "" ? "Description is not avaiable" : personagem[0].description}</p>
+                                </div>
+                            </div>
 
-                                { tabContentData.length != -1 && (
-                                    <ul className={styles.lista}>
-                                        {tabContentData.map((item) => {
+                            <div className={styles.secaoBaixo}>
+                                <div className={styles.tabs}>
+                                    <ul className={styles.tabsContainer}>
+                                        {tabItems.map((item) => {
                                             return (
                                                 <li>
-                                                    {item.title}
+                                                    <button
+                                                        style={{ borderBottom: `${item === tabContent ? "3px solid #e03d3d " : ""}` }}
+                                                        onClick={() => fetchTabData(item)}
+                                                    >
+                                                        {item}
+                                                    </button>
                                                 </li>
                                             )
                                         })}
-
                                     </ul>
+
+                                </div>
+                                {loading && <p className={styles.pFeedback}>Loading...</p>}
+
+                                {!loading && (
+                                    <>
+                                        {tabContentData.length > 0 ? (
+                                            <ul className={styles.lista}>
+                                                { tabContentData.map((item) => (
+                                                    <li key={item.id}>
+                                                        {item.title}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p className={styles.pFeedback}>{`No ${tabContent} found.`}</p>
+                                        )}
+                                    </>
                                 )}
 
                             </div>
