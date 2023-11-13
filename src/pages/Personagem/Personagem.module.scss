@@ -43,6 +43,12 @@
 
             .infoContainer {
                 margin: auto 0;
+                h2 {
+                    font-size: 32px;
+                    font-family: 'Roboto Condensed', sans-serif;
+                    text-transform: uppercase;
+                    margin-bottom: 8px;
+                }
             }
         }
 
@@ -88,8 +94,22 @@
 
                 li {
                     background-color: #3131310a;
-                    padding: 16px;
                     border-radius: 4px;
+                    overflow: hidden;
+                    display: flex;                    
+
+                    .itemID {
+                        background-color: #313c4a;
+                        color: #FFF;
+                        width: 40px; 
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;    
+                        flex-shrink: 0;                 
+                    }
+                    .itemTitle {
+                        padding: 16px;
+                    }
                 }
             }
         }

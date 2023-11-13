@@ -99,9 +99,10 @@ export default function Personagem() {
                                     <>
                                         {tabContentData.length > 0 ? (
                                             <ul className={styles.lista}>
-                                                { tabContentData.map((item) => (
+                                                { tabContentData.map((item, index) => (
                                                     <li key={item.id}>
-                                                        {item.title}
+                                                        <div className={styles.itemID}>{index + 1}</div>
+                                                        <span className={styles.itemTitle}>{item.title}</span>
                                                     </li>
                                                 ))}
                                             </ul>
