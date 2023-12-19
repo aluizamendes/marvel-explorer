@@ -8,3 +8,7 @@ a {
   text-decoration: none; 
   color: inherit;
 }
+
+body {
+  background-color: #f4f5f7;
+}
